@@ -52,7 +52,7 @@ SELECT * FROM abcd
 statement ok
 UPSERT INTO abcd VALUES (1, 2, 3, 4), (5, 6, 7, 8)
 
-query IIII
+query IIII rowsort
 SELECT * FROM abcd
 ----
 1 2 3 4

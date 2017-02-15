@@ -635,9 +635,13 @@ func (t *logicTest) processTestFile(path string) error {
 				//   - B for boolean
 				// The sort mode is one of:
 				//   - "nosort" (default)
-				//   - "rowsort"
-				//   - "valuesort"
-				//   - "colnames"
+				//   - "rowsort": sorts both the returned and the expected rows assuming
+				//                 one white-space separated word per column.
+				//   - "valuesort": sorts all values on all rows as one big set of
+				//                  strings (for both the returned and the expected
+				//                  rows).
+				//   - "colnames": column names are verified (the expected column names
+				//                 are the first line in the expected results).
 				//
 				// The label is optional. If specified, the test runner stores a hash
 				// of the results of the query under the given label. If the label is
@@ -1243,7 +1247,7 @@ func TestLogicDistSQL(t *testing.T) {
 	defer sql.SetDefaultDistSQLMode("ON")()
 
 	// TODO(radu): make this run on 3 nodes (#13377)
-	l := makeLogicTest(t, 1 /* numNodes */, true /* useFakeSpanResolver */)
+	l := makeLogicTest(t, 3 /* numNodes */, true /* useFakeSpanResolver */)
 	l.run()
 }
 

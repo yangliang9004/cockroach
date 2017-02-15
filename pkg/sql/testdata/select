@@ -220,12 +220,12 @@ SELECT * FROM xyzw LIMIT 0
 ----
 
 query IIII
-SELECT * FROM xyzw LIMIT 1
+SELECT * FROM xyzw ORDER BY x LIMIT 1
 ----
 1 2 3 4
 
 query IIII
-SELECT * FROM xyzw LIMIT 1 OFFSET 1
+SELECT * FROM xyzw ORDER BY x LIMIT 1 OFFSET 1
 ----
 4 5 6 7
 
@@ -241,7 +241,7 @@ query IIII
 SELECT * FROM (SELECT * FROM xyzw LIMIT 5) OFFSET 5
 ----
 
-query II
+query II rowsort
 SELECT z, y FROM xyzw@foo
 ----
 3 2

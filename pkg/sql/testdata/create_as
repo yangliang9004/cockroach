@@ -15,7 +15,7 @@ CREATE TABLE itemColors (color) AS VALUES ('blue'), ('red'), ('green')
 statement ok
 CREATE TABLE itemTypes AS (SELECT item, color FROM stock, itemColors)
 
-query TT
+query TT rowsort
 SELECT * FROM itemTypes
 ----
 cups blue

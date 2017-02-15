@@ -529,7 +529,7 @@ CREATE TABLE bar (id INT PRIMARY KEY, baz STRING, UNIQUE INDEX i_bar (baz))
 statement ok
 INSERT INTO bar VALUES (0, NULL), (1, NULL)
 
-query IT
+query IT rowsort
 SELECT * FROM bar ORDER BY baz, id
 ----
 0 NULL
