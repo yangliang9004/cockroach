@@ -173,8 +173,8 @@ EXPLAIN (DEBUG) SELECT * FROM kv@a
 8  /kv/a/'f'  /'e'     ROW
 9  /kv/a/'g'  /'f'     ROW
 
-query TT rowsort
-SELECT * FROM kv
+query TT
+SELECT * FROM kv ORDER BY k
 ----
 A    NULL
 a    b
@@ -198,7 +198,7 @@ CREATE TABLE kv2 (
 statement ok
 INSERT INTO kv2 VALUES ('a', 'b'), ('c', 'd'), ('e', 'f'), ('f', 'g')
 
-query TT
+query TT rowsort
 SELECT * FROM kv2
 ----
 a   b

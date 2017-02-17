@@ -400,10 +400,11 @@ NULL 4    false
 
 # Check column orders and names.
 query IIIIII colnames
-SELECT * FROM (onecolumn CROSS JOIN twocolumn JOIN onecolumn AS a(b) ON a.b=twocolumn.x JOIN twocolumn AS c(d,e) ON a.b=c.d AND c.d=onecolumn.x) LIMIT 1
+SELECT * FROM (onecolumn CROSS JOIN twocolumn JOIN onecolumn AS a(b) ON a.b=twocolumn.x JOIN twocolumn AS c(d,e) ON a.b=c.d AND c.d=onecolumn.x) ORDER BY 1 LIMIT 1
 ----
 x  x  y  b  d  e
-44 44 51 44 44 51
+42 42 53 42 42 53
+
 
 # Check EXPLAIN.
 query ITTT
@@ -552,10 +553,10 @@ x
 
 # Check that a single column can have multiple table aliases.
 query IIII colnames
-SELECT * FROM (twocolumn AS a JOIN twocolumn AS b USING(x) JOIN twocolumn AS c USING(x)) LIMIT 1
+SELECT * FROM (twocolumn AS a JOIN twocolumn AS b USING(x) JOIN twocolumn AS c USING(x)) ORDER BY x LIMIT 1
 ----
 x  y  y  y
-44 51 51 51
+42 53 53 53
 
 query IIIIII colnames
 SELECT a.x AS s, b.x, c.x, a.y, b.y, c.y FROM (twocolumn AS a JOIN twocolumn AS b USING(x) JOIN twocolumn AS c USING(x)) ORDER BY s
