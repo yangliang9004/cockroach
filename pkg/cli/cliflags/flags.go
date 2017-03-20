@@ -260,6 +260,12 @@ server to listen on an external address in insecure mode.`,
 		Description: `Prompt for the new user's password.`,
 	}
 
+	CertsDir = FlagInfo{
+		Name:        "certs-dir",
+		EnvVar:      "COCKROACH_CERTS_DIR",
+		Description: `Path to the directory containing SSL certificates and keys.`,
+	}
+
 	CACert = FlagInfo{
 		Name:        "ca-cert",
 		EnvVar:      "COCKROACH_CA_CERT",

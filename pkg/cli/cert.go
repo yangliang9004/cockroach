@@ -102,10 +102,31 @@ func runCreateClientCert(cmd *cobra.Command, args []string) error {
 	)
 }
 
+// A listCerts command generates a client certificate and stores it
+// in the cert directory under <username>.crt and key under <username>.key.
+var listCertsCmd = &cobra.Command{
+	Use:   "list",
+	Short: "list certs in --cert-dir",
+	Long: `
+List certificates and keys found in the certificate directory.
+`,
+	RunE: MaybeDecorateGRPCError(runListCerts),
+}
+
+// runListCerts loads the certificate manager and lists all certs.
+func runListCerts(cmd *cobra.Command, args []string) error {
+	if len(args) != 0 {
+		return usageAndError(cmd)
+	}
+	cm := security.NewCertificateManager(baseCfg.SSLCertsDir)
+	return errors.Wrap(cm.Reload(), "failed to generate clent certificate")
+}
+
 var certCmds = []*cobra.Command{
 	createCACertCmd,
 	createNodeCertCmd,
 	createClientCertCmd,
+	listCertsCmd,
 }
 
 var certCmd = &cobra.Command{

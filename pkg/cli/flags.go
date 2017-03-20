@@ -317,6 +317,7 @@ func init() {
 		stringFlag(f, &baseCfg.SSLCA, cliflags.CACert, baseCfg.SSLCA)
 		stringFlag(f, &baseCfg.SSLCert, cliflags.Cert, baseCfg.SSLCert)
 		stringFlag(f, &baseCfg.SSLCertKey, cliflags.Key, baseCfg.SSLCertKey)
+		stringFlag(f, &baseCfg.SSLCertsDir, cliflags.CertsDir, base.DefaultCertsDirectory)
 
 		// Cluster joining flags.
 		varFlag(f, &serverCfg.JoinList, cliflags.Join)

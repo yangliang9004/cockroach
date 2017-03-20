@@ -56,6 +56,9 @@ const (
 
 	// DefaultRaftTickInterval is the default resolution of the Raft timer.
 	DefaultRaftTickInterval = 200 * time.Millisecond
+
+	// DefaultCertsDirectory is the default value for the cert directory flag.
+	DefaultCertsDirectory = "cockroach-certs"
 )
 
 type lazyTLSConfig struct {
@@ -78,10 +81,11 @@ type Config struct {
 	Insecure bool
 
 	// SSLCA and others contain the paths to the ssl certificates and keys.
-	SSLCA      string // CA certificate
-	SSLCAKey   string // CA key (to sign only)
-	SSLCert    string // Client/server certificate
-	SSLCertKey string // Client/server key
+	SSLCA       string // CA certificate
+	SSLCAKey    string // CA key (to sign only)
+	SSLCert     string // Client/server certificate
+	SSLCertKey  string // Client/server key
+	SSLCertsDir string // Directory containing certs/keys.
 
 	// User running this process. It could be the user under which
 	// the server is running or the user passed in client calls.
