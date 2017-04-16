@@ -40,6 +40,7 @@ import (
 	"github.com/cockroachdb/cockroach/pkg/storage"
 	"github.com/cockroachdb/cockroach/pkg/testutils"
 	"github.com/cockroachdb/cockroach/pkg/testutils/serverutils"
+	"github.com/cockroachdb/cockroach/pkg/testutils/sqlutils"
 	"github.com/cockroachdb/cockroach/pkg/util"
 	"github.com/cockroachdb/cockroach/pkg/util/hlc"
 	"github.com/cockroachdb/cockroach/pkg/util/httputil"
@@ -460,21 +461,32 @@ func TestOfficializeAddr(t *testing.T) {
 
 func TestClusterStores(t *testing.T) {
 	defer leaktest.AfterTest(t)()
-	tc := serverutils.StartTestCluster(t, 2, base.TestClusterArgs{})
+	tc := serverutils.StartTestCluster(t, 4, base.TestClusterArgs{})
 	defer tc.Stopper().Stop()
 
+	// Wait until all stores are gossiped to node 0.
 	testutils.SucceedsSoon(t, func() error {
 		stores := tc.Server(0).(*TestServer).ClusterStores()
-		if len(stores) != 2 {
-			return errors.Errorf("expected 2 stores, got %v", stores)
-		}
-		n1 := tc.Server(0).NodeID()
-		n2 := tc.Server(1).NodeID()
-		s1 := stores[0].NodeID
-		s2 := stores[1].NodeID
-		if !(n1 == s1 && n2 == s2) && !(n1 == s2 && n2 == s1) {
-			return errors.Errorf("expected stores for nodes %d, %d, got %v", n1, n2, stores)
+		if len(stores) != 4 {
+			return errors.Errorf("expected 4 stores, got %v", stores)
 		}
 		return nil
 	})
+
+	sqlutils.CreateTable(
+		t, tc.ServerConn(0), "t",
+		"k INT PRIMARY KEY, v INT",
+		100,
+		sqlutils.ToRowFn(sqlutils.RowIdxFn, sqlutils.RowModuloFn(10)),
+	)
+
+	r := sqlutils.MakeSQLRunner(t, tc.ServerConn(0))
+
+	// Introduce 9 splits to get 10 ranges.
+	r.Exec("ALTER TABLE test.t SPLIT AT (SELECT i*10 FROM GENERATE_SERIES(1, 9) as g(i))")
+
+	stores := tc.Server(0).(*TestServer).ClusterStores()
+	if len(stores) != 4 {
+		t.Fatalf("expected 4 stores, got %v", stores)
+	}
 }
