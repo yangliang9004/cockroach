@@ -419,7 +419,10 @@ func (dsp *distSQLPlanner) partitionSpans(
 
 			if !desc.ContainsKey(lastKey) {
 				// This range must contain the last range's EndKey.
-				log.Fatalf(ctx, "next range doesn't cover last end key: %#v %v", splits, desc.RSpan())
+				log.Fatalf(
+					ctx, "next range %v doesn't cover last end key %v. Splits: %#v",
+					desc.RSpan(), lastKey, splits,
+				)
 			}
 
 			// Limit the end key to the end of the span we are resolving.
