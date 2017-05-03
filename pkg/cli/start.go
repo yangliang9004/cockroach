@@ -407,6 +407,11 @@ func runStart(cmd *cobra.Command, args []string) error {
 			}
 			msg := buf.String()
 			log.Infof(startCtx, "Startup message:\n%s", msg)
+			pf := cmd.Flags()
+			vf := pf.Lookup(logflags.LogToStderrName)
+			if vf == nil {
+				fmt.Print(msg)
+			}
 			fmt.Print(msg)
 			return nil
 		}(); err != nil {
